@@ -1,3 +1,4 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+fun main() {
+    val archive = Archive()
+    archive.menu("архивов", "архив", "мой созданный архив")
 }
