@@ -1,27 +1,26 @@
 import java.util.Scanner
 
 class Note : Reusable() {
-    override var name: String = "что-то"
+    private val name: String = "что-то"
     override val archiveMap: MutableMap<String, MutableList<String>> = mutableMapOf()
-    val listOfNote: MutableList<String> = mutableListOf()
-    override fun create(name: String): MutableMap<String, MutableList<String>> {
-        val note2 = Note()
+    private val listOfNote: MutableList<String> = mutableListOf()
+
+    override fun create() {
         do {
             println("Чтобы добавить заметку, введите имя заметки, для выхода введите нет")
-            var nameOfNote = Scanner(System.`in`).nextLine()
+            val nameOfNote = Scanner(System.`in`).nextLine()
             listOfNote.add(nameOfNote)
             check(nameOfNote, "Имя заметки")
             if ((nameOfNote == "") || (nameOfNote == "нет")) {
                 listOfNote.remove(nameOfNote)
             }
-            archiveMap.set(name, listOfNote)
+            archiveMap[name] = listOfNote
         } while (nameOfNote != "нет")
-        return archiveMap
     }
 
-    override fun open(archiveMap: MutableMap<String, MutableList<String>>, name: String) {
+    override fun open(archiveMap: MutableMap<String, MutableList<String>>) {
         println("Все заметки: ${archiveMap.values}")
-        val notes = archiveMap.get(name)
+        val notes = archiveMap[name]
         println("Выберете заметку")
         do {
             val nameOfNote = (Scanner(System.`in`).nextLine()).substringBefore(" ")
@@ -29,12 +28,9 @@ class Note : Reusable() {
                 println("Вы находитесь в заметке $nameOfNote")
                 do {
                     println("Если хотите добавить текст в заметку, напечатайте его ниже или 'нет' для выхода")
-                    var text = Scanner(System.`in`).nextLine()
+                    val text = Scanner(System.`in`).nextLine()
+                    add(nameOfNote, text)
                     check(text, "Текст заметки")
-                    text = nameOfNote.plus(" ").plus(text)
-                    val listOfNotes: MutableMap<String, String> = mutableMapOf()
-                    listOfNotes.put(nameOfNote, text)
-                    println("Текст вашей заметки $nameOfNote: \n ${listOfNotes.get(nameOfNote)}")
                 } while (text != "нет")
             } else if (nameOfNote == "назад") {
                 menu("заметок", "заметку", "моя созданная заметка")
@@ -43,6 +39,12 @@ class Note : Reusable() {
                 println("Имя заметки не найдено попробуйте еще раз или введите назад чтобы вернуться")
             }
         } while (notes?.contains(nameOfNote) != true)
+    }
+    private fun add(nameOfNote: String, text: String){
+        val textOfNote = "$nameOfNote $text"
+        val listOfNotes: MutableMap<String, String> = mutableMapOf()
+        listOfNotes[nameOfNote] = textOfNote
+        println("Текст вашей заметки $nameOfNote: \n ${listOfNotes[nameOfNote]}")
     }
 
     override fun exit() {

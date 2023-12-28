@@ -1,42 +1,42 @@
 import java.util.Scanner
+import kotlin.system.exitProcess
 
 class Archive : Reusable() {
-    val note = Note()
-    override var name: String = ""
     override val archiveMap: MutableMap<String, MutableList<String>> = mutableMapOf()
-    override fun create(name: String): MutableMap<String, MutableList<String>> {
+    private val note = Note()
+    override fun create() {
         do {
             println("Чтобы добавить архив, введите имя архива, для выхода введите нет")
-            var name = Scanner(System.`in`).nextLine()
-            archiveMap.put(name, mutableListOf())
-            note.check(name, "Имя архива")
-            if ((name == "") || (name == "нет")) archiveMap.remove(name, mutableListOf())
-        } while (name != "нет")
-        return archiveMap
+            val input = Scanner(System.`in`).nextLine()
+            archiveMap[input] = mutableListOf()
+            check(input, "Имя архива")
+            if ((input == "") || (input == "нет")) archiveMap.remove(input, mutableListOf())
+        } while (input != "нет")
+
     }
 
-    override fun open(archiveMap: MutableMap<String, MutableList<String>>, name: String) {
+    override fun open(archiveMap: MutableMap<String, MutableList<String>>) {
         println("Все архивы: ${archiveMap.keys}")
         println("Выберете архив")
         do {
-            var name = Scanner(System.`in`).nextLine()
-            if (archiveMap.containsKey(name)) {
-                println("Вы находитесь в архиве $name")
+            val input = Scanner(System.`in`).nextLine()
+            if (archiveMap.containsKey(input)) {
+                println("Вы находитесь в архиве $input")
                 note.menu("заметок", "заметку", "моя созданная заметка")
 
-            } else if (name == "назад") {
+            } else if (input == "назад") {
                 menu("архивов", "архив", "мой созданный архив")
                 break
             } else {
                 println("Имя архива не найдено попробуйте еще раз или введите назад чтобы вернуться")
 
             }
-        } while (!archiveMap.containsKey(name))
+        } while (!archiveMap.containsKey(input))
 
 
     }
 
     override fun exit() {
-        System.exit(1)
+        exitProcess(1)
     }
 }
